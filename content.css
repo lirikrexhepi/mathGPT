@@ -1,0 +1,167 @@
+:root {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #171717;
+  --card-foreground: #fafafa;
+  --primary: #10a37f;
+  --primary-foreground: #ffffff;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --radius: 0.5rem;
+}
+
+.mathgpt-symbols {
+  position: fixed;
+  right: -420px; /* Start off-screen */
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10000;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  background-color: #09090b;
+  border-radius: var(--radius);
+  width: 420px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--muted);
+  backdrop-filter: none;
+  transition: right 0.3s ease;
+}
+
+.mathgpt-symbols.visible {
+  right: 20px;
+}
+
+.mathgpt-toggle {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 120px;
+  background-color: #09090b;
+  border-radius: 15px 0 0 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 10001;
+  border: 1px solid var(--muted);
+  border-right: none;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease;
+}
+
+.mathgpt-toggle-icon {
+  color: #10a37f;
+  font-size: 20px;
+  font-weight: normal;
+}
+
+.mathgpt-toggle.active {
+  right: 440px;
+}
+
+.mathgpt-toggle.hover-active {
+  right: 440px;
+}
+
+.mathgpt-category-label {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+  margin-bottom: 4px;
+  padding-left: 4px;
+  border-bottom: 1px solid var(--muted);
+}
+
+.mathgpt-category-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.mathgpt-symbol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: var(--card);
+  color: var(--foreground);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 22px;
+  transition: all 0.15s ease;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--muted);
+  position: relative;
+}
+
+/* Custom tooltip */
+.mathgpt-symbol[data-tooltip]:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--card);
+  color: var(--foreground);
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10010;
+  border: 1px solid var(--muted);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.mathgpt-symbol:hover {
+  background-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.mathgpt-symbol.copied {
+  background-color: var(--primary);
+}
+
+.copy-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10001;
+}
+
+.copy-notification.show {
+  opacity: 1;
+}
+
+/* Custom scrollbar for the symbols container */
+.mathgpt-symbols::-webkit-scrollbar {
+  width: 5px;
+}
+
+.mathgpt-symbols::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mathgpt-symbols::-webkit-scrollbar-thumb {
+  background-color: var(--muted);
+  border-radius: 10px;
+}

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MathGPT</title>
+    <style>
+      :root {
+        --background: #09090b;
+        --foreground: #fafafa;
+        --card: #171717;
+        --card-foreground: #fafafa;
+        --primary: #10a37f;
+        --primary-foreground: #ffffff;
+        --muted: #262626;
+        --muted-foreground: #a3a3a3;
+        --radius: 0.5rem;
+      }
+
+      body {
+        width: 320px;
+        padding: 15px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        color: var(--foreground);
+        background-color: var(--background);
+        margin: 0;
+      }
+
+      h1 {
+        color: var(--primary);
+        font-size: 24px;
+        text-align: center;
+        margin-top: 0;
+      }
+
+      p {
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--muted-foreground);
+      }
+
+      .info {
+        background-color: var(--card);
+        padding: 12px;
+        border-radius: var(--radius);
+        margin-top: 15px;
+        border: 1px solid var(--muted);
+      }
+
+      .status-active {
+        color: var(--primary);
+        font-weight: bold;
+        margin: 10px 0;
+        padding: 8px;
+        background-color: rgba(16, 163, 127, 0.1);
+        border-radius: var(--radius);
+      }
+
+      .status-inactive,
+      .status-warning {
+        color: #e74c3c;
+        font-weight: bold;
+        margin: 10px 0;
+        padding: 8px;
+        background-color: rgba(231, 76, 60, 0.1);
+        border-radius: var(--radius);
+      }
+
+      button {
+        background-color: var(--card);
+        color: var(--foreground);
+        border: 1px solid var(--muted);
+        padding: 8px 12px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 10px;
+        transition: all 0.15s ease;
+        width: 100%;
+      }
+
+      button:hover {
+        background-color: var(--primary);
+        transform: scale(1.02);
+      }
+
+      .settings {
+        margin-top: 15px;
+        border-top: 1px solid var(--muted);
+        padding-top: 15px;
+      }
+
+      .settings h2 {
+        font-size: 16px;
+        margin-top: 0;
+        color: var(--primary);
+      }
+
+      .category-option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        padding: 6px 8px;
+        border-radius: var(--radius);
+        background-color: var(--card);
+      }
+
+      .toggle {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+      }
+
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--muted);
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--primary);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(20px);
+      }
+
+      #saved-message {
+        display: none;
+        color: var(--primary);
+        text-align: center;
+        margin-top: 10px;
+        font-weight: bold;
+        padding: 8px;
+        background-color: rgba(16, 163, 127, 0.1);
+        border-radius: var(--radius);
+      }
+
+      #how-to-use-content {
+        display: none;
+        margin-top: 10px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 8px;
+      }
+
+      .button-group button {
+        flex: 1;
+      }
+
+      .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      .disabled .slider {
+        background-color: var(--muted);
+      }
+
+      .disabled .slider:before {
+        transform: translateX(0);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MathGPT</h1>
+    <p>A math symbol toolbox for ChatGPT.</p>
+    <div id="status" class="status-inactive">Checking status...</div>
+
+    <div class="button-group">
+      <button id="go-to-chatgpt">Go to ChatGPT</button>
+      <button id="how-to-use-btn">Instructions</button>
+    </div>
+
+    <div id="how-to-use-content" class="info">
+      <p><strong>How to use:</strong></p>
+      <ol>
+        <li>Navigate to chatgpt.com</li>
+        <li>The symbol panel will appear on the right side</li>
+        <li>Click on any symbol to copy it to your clipboard</li>
+        <li>Paste it into your ChatGPT prompt</li>
+      </ol>
+    </div>
+
+    <div class="settings">
+      <h2>Symbol Categories</h2>
+      <p>Choose which symbol categories to display:</p>
+
+      <div class="category-option">
+        <span>Basic Symbols</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-basic"
+            class="category-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="category-option">
+        <span>Calculus</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-calculus"
+            class="category-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="category-option">
+        <span>Algebra</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-algebra"
+            class="category-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="category-option">
+        <span>Geometry</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-geometry"
+            class="category-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="category-option">
+        <span>Sets</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-sets"
+            class="category-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="category-option">
+        <span>Logic</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-logic"
+            class="category-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="category-option">
+        <span>Greek Letters</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-greek"
+            class="category-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <h2>Insertion Mode</h2>
+      <div class="category-option">
+        <span>Copy to clipboard</span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-clipboard"
+            class="mode-toggle"
+            checked
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="category-option disabled">
+        <span>Insert directly into chat <small>(unreleased)</small></span>
+        <label class="toggle">
+          <input
+            type="checkbox"
+            id="toggle-direct-insert"
+            class="mode-toggle"
+            disabled
+          />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div id="saved-message">Settings saved!</div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

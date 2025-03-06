@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "MathGPT",
+  "version": "1.0",
+  "description": "A math symbol toolbox for ChatGPT",
+  "icons": {
+    "16": "icons/icon300.png",
+    "32": "icons/icon300.png",
+    "48": "icons/icon300.png",
+    "128": "icons/icon300.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon300.png",
+      "32": "icons/icon300.png",
+      "48": "icons/icon300.png",
+      "128": "icons/icon300.png"
+    }
+  },
+  "permissions": ["clipboardWrite", "activeTab", "storage", "scripting"],
+  "host_permissions": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
